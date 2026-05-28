@@ -1,6 +1,16 @@
-import { env } from './config/env.js';
+import { startApplication } from './bootstrap/start.js';
 import { logger } from './infrastructure/logger/logger.js';
 
-void env;
+process.on('uncaughtException', (error) => {
+  logger.fatal(error, 'Uncaught exception');
 
-logger.info('Application bootstrap initialized');
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  logger.fatal({ reason }, 'Unhandled promise rejection');
+
+  process.exit(1);
+});
+
+void startApplication();
